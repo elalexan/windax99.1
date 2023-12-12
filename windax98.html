@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Windows 98 Simulator</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #008080;
+        }
+
+        #taskbar {
+            background-color: #c6c6c6;
+            color: #ffffff;
+            position: fixed;
+            bottom: 10px;
+            left: 0;
+            width: 100%;
+            padding: 15px 5px;
+            text-align: center;
+            border-top: 2px solid #c0c0c0;
+        }
+
+        #desktop {
+            background: url('windows98_wallpaper.jpg') center center no-repeat;
+            background-size: cover;
+            height: calc(100vh - 50px);
+            padding: 10px;
+            position: relative;
+        }
+
+        .window {
+            border: 2px solid #000;
+            border-radius: 5px;
+            background-color: #c0c0c0;
+            position: absolute;
+            padding: 10px;
+            overflow: hidden;
+            width: 200px;
+            cursor: move;
+        }
+
+        .window-header {
+            background-color: #008080;
+            color: #ffffff;
+            padding: 5px;
+            border-top-left-radius: 5px;
+            border-top-right-radius: 5px;
+            user-select: none;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .window-content {
+            padding: 10px;
+        }
+
+        .close-button {
+            background: none;
+            border: none;
+            color: #ffffff;
+            cursor: pointer;
+        }
+
+        .icon {
+            width: 50px;
+            height: 50px;
+            border: 2px solid #c0c0c0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ffffff;
+            cursor: pointer;
+        }
+
+        #icon {
+            position: absolute;
+            left: 10px;
+            top: 10px;
+            background-color: #ffffff;
+        }
+
+        #icon-text {
+            position: absolute;
+            left: 10px;
+            top: 70px;
+            color: #ffffff;
+        }
+
+        #calculator-icon {
+            position: absolute;
+            left: 10px;
+            top: 130px; /* Ajusta la posición según tus necesidades */
+            background-color: #ffffff;
+        }
+
+        #calculator-icon-text {
+            position: absolute;
+            left: 10px;
+            top: 190px; /* Ajusta la posición según tus necesidades */
+            color: #ffffff;
+        }
+
+        #calculator-window,
+        #creditos-window {
+            display: none;
+        }
+
+        #calculator-input {
+            width: 100%;
+            margin-bottom: 10px;
+        }
+
+        #calculator-result {
+            background-color: #ffffff;
+            padding: 10px;
+            border: 1px solid #c0c0c0;
+        }
+    </style>
+</head>
+<body>
+    <div id="desktop">
+        <div class="window" style="left: 50px; top: 50px;" draggable="true" onmousedown="startDragging(event, this)">
+            <div class="window-header">
+                Windax 98 Demo
+                <button class="close-button" onclick="closeWindow(this.parentNode.parentNode)">X</button>
+            </div>
+            <div class="window-content">
+                <!-- Content goes here -->
+            </div>
+        </div>
+
+        <div class="window" style="left: 150px; top: 150px;" draggable="true" onmousedown="startDragging(event, this)">
+            <div class="window-header">
+                Welcome to this demo of an amateur operating system 1998
+                <button class="close-button" onclick="closeWindow(this.parentNode.parentNode)">X</button>
+            </div>
+            <div class="window-content">
+                <!-- Content goes here -->
+            </div>
+        </div>
+
+        <div class="icon" id="icon"></div>
+        <div id="icon-text">creditos.txt</div>
+
+        <!-- Icono de la calculadora -->
+        <div class="icon" id="calculator-icon"></div>
+        <div id="calculator-icon-text">calculator.exe</div>
+
+        <!-- Ventana de la calculadora -->
+        <div id="calculator-window" class="window" style="left: 200px; top: 200px;">
+            <div class="window-header">
+                Calculator
+                <button class="close-button" onclick="closeWindow('calculator-window')">X</button>
+            </div>
+            <div class="window-content">
+                <input type="text" id="calculator-input" placeholder="Enter an expression">
+                <button onclick="calculate()">Calculate</button>
+                <div id="calculator-result"></div>
+            </div>
+        </div>
+
+        <!-- Ventana de creditos.txt -->
+        <div id="creditos-window" class="window" style="left: 250px; top: 250px;" draggable="true" onmousedown="startDragging(event, this)">
+            <div class="window-header">
+                Creditos.txt
+                <button class="close-button" onclick="closeWindow('creditos-window')">X</button>
+            </div>
+            <div class="window-content">
+                12/1999 (MMXXIII) Argentina, creador: elalexand. Esta es una demo de un sistema operativo amateur, hecho como experimento.
+            </div>
+        </div>
+    </div>
+
+    <div id="taskbar">
+        <!-- No hay elemento "p" aquí, por lo que se elimina el "Start" -->
+    </div>
+
+    <script>
+        function startDragging(e, window) {
+            e.preventDefault();
+
+            let offsetX = e.clientX - window.getBoundingClientRect().left;
+            let offsetY = e.clientY - window.getBoundingClientRect().top;
+
+            function dragMove(e) {
+                window.style.left = e.clientX - offsetX + 'px';
+                window.style.top = e.clientY - offsetY + 'px';
+            }
+
+            function dragEnd() {
+                document.removeEventListener('mousemove', dragMove);
+                document.removeEventListener('mouseup', dragEnd);
+            }
+
+            document.addEventListener('mousemove', dragMove);
+            document.addEventListener('mouseup', dragEnd);
+        }
+
+        function closeWindow(windowId) {
+            const windowElement = document.getElementById(windowId);
+            windowElement.parentNode.removeChild(windowElement);
+        }
+
+        document.getElementById('icon').addEventListener('click', function() {
+            document.getElementById('creditos-window').style.display = 'block';
+        });
+
+        document.getElementById('calculator-icon').addEventListener('click', function() {
+            document.getElementById('calculator-window').style.display = 'block';
+        });
+
+        function calculate() {
+            const input = document.getElementById('calculator-input').value;
+            try {
+                const result = eval(input);
+                document.getElementById('calculator-result').innerHTML = `Result: ${result}`;
+            } catch (error) {
+                document.getElementById('calculator-result').innerHTML = 'Invalid expression';
+            }
+        }
+    </script>
+</body>
+</html>
